@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Letras da Igreja</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #0a7a3d;
+      color: white;
+      padding: 16px;
+      text-align: center;
+    }
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 16px;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    button {
+      background: #0a7a3d;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #075c2e;
+    }
+    .musica {
+      margin-bottom: 12px;
+    }
+    .musica h3 {
+      margin: 0 0 6px 0;
+      color: #0a7a3d;
+    }
+    .musica pre {
+      white-space: pre-wrap;
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Letras da Igreja</h1>
+    <p>Adicione e visualize letras de músicas</p>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>Adicionar nova música</h2>
+      <input id="titulo" type="text" placeholder="Título da música" />
+      <textarea id="letra" rows="6" placeholder="Letra da música"></textarea>
+      <button onclick="adicionarMusica()">Salvar música</button>
+    </div>
+
+    <div class="card">
+      <h2>Músicas salvas</h2>
+      <div id="lista"></div>
+    </div>
+  </main>
+
+  <script>
+    const lista = document.getElementById('lista');
+
+    function carregar() {
+      const musicas = JSON.parse(localStorage.getItem('musicas')) || [];
+      lista.innerHTML = '';
+      musicas.forEach((m, i) => {
+        const div = document.createElement('div');
+        div.className = 'musica';
+        div.innerHTML = `
+          <h3>${m.titulo}</h3>
+          <pre>${m.letra}</pre>
+          <button onclick="removerMusica(${i})">Remover</button>
+        `;
+        lista.appendChild(div);
+      });
+    }
+
+    function adicionarMusica() {
+      const titulo = document.getElementById('titulo').value.trim();
+      const letra = document.getElementById('letra').value.trim();
+
+      if (!titulo || !letra) {
+        alert('Preencha o título e a letra');
+        return;
+      }
+
+      const musicas = JSON.parse(localStorage.getItem('musicas')) || [];
+      musicas.push({ titulo, letra });
+      localStorage.setItem('musicas', JSON.stringify(musicas));
+
+      document.getElementById('titulo').value = '';
+      document.getElementById('letra').value = '';
+      carregar();
+    }
+
+    function removerMusica(index) {
+      const musicas = JSON.parse(localStorage.getItem('musicas')) || [];
+      musicas.splice(index, 1);
+      localStorage.setItem('musicas', JSON.stringify(musicas));
+      carregar();
+    }
+
+    carregar();
+  </script>
+</body>
+</html>
